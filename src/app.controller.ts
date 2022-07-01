@@ -225,7 +225,7 @@ export class AppController {
       [
         {
           account: this.inputs.fromAccount.scriptHash,
-          // scopes: tx.WitnessScope.CalledByEntry,
+          // scopes: tx.WitnessScope.CalledByEntry, // TODO: also try to make it with CalledByEntry here
           scopes: tx.WitnessScope.CustomContracts,
           allowedContracts: [
             this.coreToken,
