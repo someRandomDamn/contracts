@@ -1,0 +1,36 @@
+[
+  {
+    "contract": "SomeNFT",
+    "operation": "setGame",
+    "args": [
+      "#Core"
+    ]
+  },
+  {
+    "contract": "SomeNFT",
+    "operation": "ownerOf",
+    "args": [
+      1
+    ]
+  },
+  {
+    "contract": "Core",
+    "operation": "setup",
+    "args": [
+      "#SomeNFT"
+    ]
+  },
+  {
+    "contract": "SomeNFT",
+    "operation": "create_cutie",
+    "args": [
+      "@coz",
+      0,
+      0,
+      3,
+      4,
+      0,
+      123123123
+    ]
+  }
+]

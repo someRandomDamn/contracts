@@ -1,0 +1,34 @@
+### IntelliJ IDEA ###
+.idea/
+#.vscode/
+*.iws
+*.iml
+*.ipr
+/out/
+
+### Mac OS
+.DS_Store
+
+### Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+### NEO-PYTHON
+*.avm
+*.debug.json
+fixtures/
+
+### compiled files
+contracts/**/*.nef
+contracts/**/*.manifest.json
+contracts/**/*.nefdbgnfo
+
+tests/__pycache__/
+contracts/__pycache__/
+
+test-engine-test.json

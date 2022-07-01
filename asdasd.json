@@ -1,0 +1,18 @@
+Account {
+  addressVersion: 53,
+  label: 'NigVWQwT8Mc4ZkxEDsaEtuvL8hZYQFHr5A',
+  isDefault: false,
+  lock: false,
+  contract: {
+    script: 'DCEDfORYDw7sK+y+h9u7TnAQiqSw2oJJTH1WZ+8IA97hon9BVuezJw==',
+    parameters: [ [Object] ],
+    deployed: false
+  },
+  _privateKey: '19650b64eb614c295053cf044b74d8cf9dab3c41040e3c88f181dcf583f37ba8',
+  _WIF: 'Kx55J7cK8hqZeLZchi9PnX2v9L6zAZTSE3eQzDD9as6dbuggy7tn',
+  _publicKey: '037ce4580f0eec2becbe87dbbb4e70108aa4b0da82494c7d5667ef0803dee1a27f',
+  _scriptHash: '9b837f8e92d0ed249d6133d3a31196f17d61bef9',
+  _address: 'NigVWQwT8Mc4ZkxEDsaEtuvL8hZYQFHr5A'
+}
+
+f9be617df19611a3d333619d24edd0928e7f839b
