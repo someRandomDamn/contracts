@@ -161,45 +161,45 @@ export class AppController {
    can easily get this number by using invokeScript with the appropriate signers.
    */
   async checkSystemFee() {
-    this.vars.tx.systemFee = u.BigInteger.fromNumber(11322390);
-    return;
-    // const invokeFunctionResponse = await this.rpcClient.invokeScript(
-    //   u.HexString.fromHex(this.vars.tx.script),
-    //   [
-    //     {
-    //       account: this.inputs.fromAccount.scriptHash,
-    //       // scopes: tx.WitnessScope.CalledByEntry, // TODO: also try to make it with CalledByEntry here
-    //       scopes: tx.WitnessScope.CustomContracts,
-    //       allowedContracts: [
-    //         this.coreContract,
-    //         this.cutieToken,
-    //       ],
-    //     },
-    //   ],
-    // );
-    // console.log(invokeFunctionResponse);
-    // if (invokeFunctionResponse.state !== 'HALT') {
-    //   throw new Error(
-    //     `Transfer script errored out: ${invokeFunctionResponse.exception}`
-    //   );
-    // }
-    // const requiredSystemFee = u.BigInteger.fromNumber(
-    //   invokeFunctionResponse.gasconsumed
-    // );
-    // if (
-    //   this.inputs.systemFee &&
-    //   u.BigInteger.fromNumber(this.inputs.systemFee) >= requiredSystemFee
-    // ) {
-    //   this.vars.tx.systemFee = u.BigInteger.fromNumber(this.inputs.systemFee);
-    //   console.log(
-    //     `  i Node indicates ${requiredSystemFee} systemFee but using user provided value of ${this.inputs.systemFee}`
-    //   );
-    // } else {
-    //   this.vars.tx.systemFee = requiredSystemFee;
-    // }
-    // console.log(
-    //   `\u001b[32m  ✓ SystemFee set: ${this.vars.tx.systemFee.toDecimal(8)}\u001b[0m`
-    // );
+    // this.vars.tx.systemFee = u.BigInteger.fromNumber(11322390);
+    // return;
+    const invokeFunctionResponse = await this.rpcClient.invokeScript(
+      u.HexString.fromHex(this.vars.tx.script),
+      [
+        {
+          account: this.inputs.fromAccount.scriptHash,
+          // scopes: tx.WitnessScope.CalledByEntry, // TODO: also try to make it with CalledByEntry here
+          scopes: tx.WitnessScope.CustomContracts,
+          allowedContracts: [
+            this.coreContract,
+            this.cutieToken,
+          ],
+        },
+      ],
+    );
+    console.log(invokeFunctionResponse);
+    if (invokeFunctionResponse.state !== 'HALT') {
+      throw new Error(
+        `Transfer script errored out: ${invokeFunctionResponse.exception}`
+      );
+    }
+    const requiredSystemFee = u.BigInteger.fromNumber(
+      invokeFunctionResponse.gasconsumed
+    );
+    if (
+      this.inputs.systemFee &&
+      u.BigInteger.fromNumber(this.inputs.systemFee) >= requiredSystemFee
+    ) {
+      this.vars.tx.systemFee = u.BigInteger.fromNumber(this.inputs.systemFee);
+      console.log(
+        `  i Node indicates ${requiredSystemFee} systemFee but using user provided value of ${this.inputs.systemFee}`
+      );
+    } else {
+      this.vars.tx.systemFee = requiredSystemFee;
+    }
+    console.log(
+      `\u001b[32m  ✓ SystemFee set: ${this.vars.tx.systemFee.toDecimal(8)}\u001b[0m`
+    );
   }
 
   /**
