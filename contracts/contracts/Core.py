@@ -18,6 +18,7 @@ from boa3.builtin.type import UInt160
 def manifest_metadata() -> NeoMetadata:
     meta = NeoMetadata()
     meta.add_permission(contract='0xe6d845c4762f3de1ec31b879dc1bdadf116cce2c', methods=['delegated_approve', 'delegated_approve_test', 'call_delegated_approve_test'])
+    meta.add_permission(contract='0x2CCE6C11DFDA1BDC79B831ECE13D2F76C445D8E6', methods=['delegated_approve', 'delegated_approve_test', 'call_delegated_approve_test'])
     return meta
 
 # -------------------------------------------

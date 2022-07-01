@@ -8,17 +8,14 @@ import * as neonCore from '@cityofzion/neon-core';
 
 @Controller()
 export class AppController {
-  private coreToken = '0xb41a1e075a75c0316649a721d202e30d0d2b2861';
+  private coreContract = '0xb41a1e075a75c0316649a721d202e30d0d2b2861';
   private cutieToken = '0xe6d845c4762f3de1ec31b879dc1bdadf116cce2c';
-  // private pseudoGas = '0x8d1dd919b8ff7c1852c260c1cb1682a643af64cd';
-  private pseudoGas = CONST.NATIVE_CONTRACT_HASH.GasToken;
-  // private rpcClient: rpc.RPCClient;
   private rpcClient;
   private vars: any = {};
   private inputs = {
     toAccount: new wallet.Account(
       // '721a66b9bc867cbd43891d0a0e7b2cf6a85c2d6fab511edc46cbecb502dddb2b',
-        'L13Wg9tckQsttrGxA8S2hMg1uqSJRWVNZh17TRTdkkNA1Libpd6o'
+      'L13Wg9tckQsttrGxA8S2hMg1uqSJRWVNZh17TRTdkkNA1Libpd6o'
     ),
     fromAccount: new wallet.Account(
       // '19650b64eb614c295053cf044b74d8cf9dab3c41040e3c88f181dcf583f37ba8',
@@ -43,65 +40,14 @@ export class AppController {
     return this.appService.getHello();
   }
 
-  getSignInfo() {
-    const msgForSigning = this.vars.tx.getMessageForSigning(
-      this.inputs.networkMagic,
-    );
-    const signature = wallet.sign(
-      msgForSigning,
-      '721a66b9bc867cbd43891d0a0e7b2cf6a85c2d6fab511edc46cbecb502dddb2b',
-    );
-    console.log({ msgForSigning, signature });
-  }
-
   @Get('xxx')
   async getX() {
-    // await this.createTransactionSimple();
     await this.createTransaction();
-
     await this.checkToken();
     await this.checkNetworkFee();
     await this.checkSystemFee();
     await this.checkBalance();
     await this.performTransfer();
-  }
-
-  async createTransactionSimple() {
-    // Since the token is now an NEP-17 token, we transfer using a VM script.
-    const script = sc.createScript({
-      scriptHash: this.pseudoGas,
-      operation: 'transfer',
-      args: [
-        sc.ContractParam.hash160(this.inputs.fromAccount.address),
-        sc.ContractParam.hash160(this.coreToken),
-        sc.ContractParam.integer(300),
-        sc.ContractParam.array(
-          sc.ContractParam.string('_create_sale_auction'),
-          sc.ContractParam.integer(1),
-          sc.ContractParam.integer(100),
-          sc.ContractParam.integer(9000),
-          sc.ContractParam.integer(3000000),
-        ),
-      ],
-    });
-
-    // We retrieve the current block height as we need to
-    const currentHeight = await this.rpcClient.getBlockCount();
-    this.vars.tx = new tx.Transaction({
-      signers: [
-        {
-          account: this.inputs.fromAccount.scriptHash,
-          // scopes: tx.WitnessScope.Global,
-          scopes: tx.WitnessScope.CustomContracts,
-          allowedContracts: [
-            this.cutieToken,
-          ],
-        },
-      ],
-      validUntilBlock: currentHeight + 1000,
-      script: script,
-    });
-    console.log('\u001b[32m  ✓ Transaction created \u001b[0m');
   }
 
   async createTransaction() {
@@ -112,7 +58,7 @@ export class AppController {
       operation: 'transfer',
       args: [
         sc.ContractParam.hash160(this.inputs.fromAccount.address),
-        sc.ContractParam.hash160(this.coreToken),
+        sc.ContractParam.hash160(this.coreContract),
         sc.ContractParam.integer(300),
         sc.ContractParam.array(
           sc.ContractParam.string('_create_sale_auction'),
@@ -132,7 +78,7 @@ export class AppController {
           account: this.inputs.fromAccount.scriptHash,
           scopes: tx.WitnessScope.CustomContracts,
           allowedContracts: [
-            this.coreToken,
+            this.coreContract,
             this.cutieToken,
           ],
         },
@@ -215,48 +161,45 @@ export class AppController {
    can easily get this number by using invokeScript with the appropriate signers.
    */
   async checkSystemFee() {
-
-    // TODO: this seems not throwing errors, but changes nothing
     this.vars.tx.systemFee = u.BigInteger.fromNumber(11322390);
     return;
-    // TODO: if we comment out above two strings, then error is thrown
-    const invokeFunctionResponse = await this.rpcClient.invokeScript(
-      u.HexString.fromHex(this.vars.tx.script),
-      [
-        {
-          account: this.inputs.fromAccount.scriptHash,
-          // scopes: tx.WitnessScope.CalledByEntry, // TODO: also try to make it with CalledByEntry here
-          scopes: tx.WitnessScope.CustomContracts,
-          allowedContracts: [
-            this.coreToken,
-            this.cutieToken,
-          ],
-        },
-      ],
-    );
-    console.log(invokeFunctionResponse);
-    if (invokeFunctionResponse.state !== 'HALT') {
-      throw new Error(
-        `Transfer script errored out: ${invokeFunctionResponse.exception}`
-      );
-    }
-    const requiredSystemFee = u.BigInteger.fromNumber(
-      invokeFunctionResponse.gasconsumed
-    );
-    if (
-      this.inputs.systemFee &&
-      u.BigInteger.fromNumber(this.inputs.systemFee) >= requiredSystemFee
-    ) {
-      this.vars.tx.systemFee = u.BigInteger.fromNumber(this.inputs.systemFee);
-      console.log(
-        `  i Node indicates ${requiredSystemFee} systemFee but using user provided value of ${this.inputs.systemFee}`
-      );
-    } else {
-      this.vars.tx.systemFee = requiredSystemFee;
-    }
-    console.log(
-      `\u001b[32m  ✓ SystemFee set: ${this.vars.tx.systemFee.toDecimal(8)}\u001b[0m`
-    );
+    // const invokeFunctionResponse = await this.rpcClient.invokeScript(
+    //   u.HexString.fromHex(this.vars.tx.script),
+    //   [
+    //     {
+    //       account: this.inputs.fromAccount.scriptHash,
+    //       // scopes: tx.WitnessScope.CalledByEntry, // TODO: also try to make it with CalledByEntry here
+    //       scopes: tx.WitnessScope.CustomContracts,
+    //       allowedContracts: [
+    //         this.coreContract,
+    //         this.cutieToken,
+    //       ],
+    //     },
+    //   ],
+    // );
+    // console.log(invokeFunctionResponse);
+    // if (invokeFunctionResponse.state !== 'HALT') {
+    //   throw new Error(
+    //     `Transfer script errored out: ${invokeFunctionResponse.exception}`
+    //   );
+    // }
+    // const requiredSystemFee = u.BigInteger.fromNumber(
+    //   invokeFunctionResponse.gasconsumed
+    // );
+    // if (
+    //   this.inputs.systemFee &&
+    //   u.BigInteger.fromNumber(this.inputs.systemFee) >= requiredSystemFee
+    // ) {
+    //   this.vars.tx.systemFee = u.BigInteger.fromNumber(this.inputs.systemFee);
+    //   console.log(
+    //     `  i Node indicates ${requiredSystemFee} systemFee but using user provided value of ${this.inputs.systemFee}`
+    //   );
+    // } else {
+    //   this.vars.tx.systemFee = requiredSystemFee;
+    // }
+    // console.log(
+    //   `\u001b[32m  ✓ SystemFee set: ${this.vars.tx.systemFee.toDecimal(8)}\u001b[0m`
+    // );
   }
 
   /**
