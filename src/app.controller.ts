@@ -8,8 +8,8 @@ import * as neonCore from '@cityofzion/neon-core';
 
 @Controller()
 export class AppController {
-  private coreContract = '0xb41a1e075a75c0316649a721d202e30d0d2b2861';
-  private cutieToken = '0xe6d845c4762f3de1ec31b879dc1bdadf116cce2c';
+  private coreContract = '0x565e4faa5a7c4b53c79e9f10b5544e8a083893d4';
+  private cutieToken = '0x1c5789c06069d0a63b1b8447eb2aaa9942e8c096';
   private rpcClient;
   private vars: any = {};
   private inputs = {
@@ -40,6 +40,11 @@ export class AppController {
     return this.appService.getHello();
   }
 
+  @Get('aaa')
+  async getXxx() {
+    return await this.rpcClient.getApplicationLog('0xb60d917656f1819c8f01fd132a4ffd7318d7e0788403f79157311876b9e92a7f')
+  }
+
   @Get('xxx')
   async getX() {
     await this.createTransaction();
@@ -52,7 +57,6 @@ export class AppController {
 
   async createTransaction() {
     // Since the token is now an NEP-17 token, we transfer using a VM script.
-    console.log(this.inputs.fromAccount);
     const script = sc.createScript({
       scriptHash: this.inputs.tokenScriptHash,
       operation: 'transfer',
@@ -69,6 +73,13 @@ export class AppController {
         ),
       ],
     });
+    // const script = sc.createScript({
+    //   scriptHash: this.coreContract,
+    //   operation: 'cutie_check_witness',
+    //   args: [
+    //   ],
+    // });
+
 
     // We retrieve the current block height as we need to
     const currentHeight = await this.rpcClient.getBlockCount();
@@ -76,6 +87,8 @@ export class AppController {
       signers: [
         {
           account: this.inputs.fromAccount.scriptHash,
+          // scopes: tx.WitnessScope.CalledByEntry,
+          // scopes: tx.WitnessScope.Global,
           scopes: tx.WitnessScope.CustomContracts,
           allowedContracts: [
             this.coreContract,
@@ -168,8 +181,9 @@ export class AppController {
       [
         {
           account: this.inputs.fromAccount.scriptHash,
-          scopes: tx.WitnessScope.CalledByEntry, // TODO: also try to make it with CalledByEntry here
+          // scopes: tx.WitnessScope.Global, // TODO: also try to make it with CalledByEntry here
           // scopes: tx.WitnessScope.CustomContracts,
+          scopes: tx.WitnessScope.CalledByEntry,
           // allowedContracts: [
           //   this.coreContract,
           //   this.cutieToken,
@@ -277,5 +291,6 @@ export class AppController {
 
     console.log('\n\n--- Transaction hash ---');
     console.log(result);
+
   }
 }

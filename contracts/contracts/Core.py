@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, cast
+from typing import Any, Dict, List, cast, Union
 
 from boa3.builtin import CreateNewEvent, NeoMetadata, metadata, public
 from boa3.builtin.contract import abort
@@ -7,7 +7,8 @@ from boa3.builtin.interop.contract import GAS as GAS_SCRIPT, call_contract, dest
 from boa3.builtin.interop.runtime import calling_script_hash, check_witness, time, script_container, \
     executing_script_hash
 from boa3.builtin.interop.storage import delete, get, put
-from boa3.builtin.type import UInt160
+from boa3.builtin.type import ECPoint, UInt160
+
 
 
 # -------------------------------------------
@@ -17,8 +18,10 @@ from boa3.builtin.type import UInt160
 @metadata
 def manifest_metadata() -> NeoMetadata:
     meta = NeoMetadata()
-    meta.add_permission(contract='0xe6d845c4762f3de1ec31b879dc1bdadf116cce2c', methods=['delegated_approve', 'delegated_approve_test', 'call_delegated_approve_test'])
-    meta.add_permission(contract='0x2CCE6C11DFDA1BDC79B831ECE13D2F76C445D8E6', methods=['delegated_approve', 'delegated_approve_test', 'call_delegated_approve_test'])
+    # meta.add_permission(contract='*', methods='*')
+    meta.add_permission(contract='0x1c5789c06069d0a63b1b8447eb2aaa9942e8c096')
+    meta.add_permission(contract='0xd2a4cff31913016155e38e474a2c06d08be276cf')
+    meta.add_trusted_source('0xd2a4cff31913016155e38e474a2c06d08be276cf')
     return meta
 
 # -------------------------------------------
@@ -119,7 +122,13 @@ def onNEP17Payment(t_from: UInt160, t_amount: int, data: List[Any]):
         start_price = cast(int, data[2])
         end_price = cast(int, data[3])
         duration = cast(int, data[4])
-        _create_sale_auction(t_from, t_amount, UInt160(get(gaziki)), cutie_id, start_price, end_price, duration)
+        _create_sale_auction(t_from, t_amount, GAS_SCRIPT, cutie_id, start_price, end_price, duration)
+        return
+    if p_operation == 'cutie_check_witness':
+        cutie_check_witness()
+        return
+    if p_operation == 'core_check_witness':
+        core_check_witness()
         return
     if p_operation == 'call_delegated_approve_test':
         assert p_len == 5, 'incorrect arguments to createStream'
@@ -140,9 +149,21 @@ def _create_sale_auction(address_from: UInt160, amount: int, token_address: UInt
 
 @public
 def test_simple() -> None:
-    test = 1
-    # call_contract(UInt160(get(TOKEN_ADDRESS)), 'delegated_approve', [address_from, UInt160(get(TOKEN_ADDRESS)), cutie_id])
+    UInt160(get(gaziki))
+
+@public
+def test_simple_Two() -> None:
+    get(gaziki)
 
 @public
 def call_delegated_approve_test() -> None:
     call_contract(UInt160(get(TOKEN_ADDRESS)), 'delegated_approve_test', [b'testegg'])
+
+@public
+def cutie_check_witness() -> Any:
+    return call_contract(UInt160(get(TOKEN_ADDRESS)), 'cutie_witness', [1])
+
+@public
+def core_check_witness() -> bool:
+    owner: UInt160 = call_contract(UInt160(get(TOKEN_ADDRESS)), 'ownerOf', [1])
+    return check_witness(owner)

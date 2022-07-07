@@ -7,13 +7,6 @@
     ]
   },
   {
-    "contract": "SomeNFT",
-    "operation": "ownerOf",
-    "args": [
-      1
-    ]
-  },
-  {
     "contract": "Core",
     "operation": "setup",
     "args": [

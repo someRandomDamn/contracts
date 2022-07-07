@@ -9,7 +9,7 @@ from boa3.builtin.interop.runtime import check_witness, script_container, callin
 from boa3.builtin.interop.stdlib import serialize, deserialize
 from boa3.builtin.interop.storage import delete, get, put, find, get_context
 from boa3.builtin.interop.storage.findoptions import FindOptions
-from boa3.builtin.type import UInt160, ByteString
+from boa3.builtin.type import UInt160, ByteString,ECPoint
 
 
 # -------------------------------------------
@@ -24,6 +24,7 @@ def gm_manifest() -> NeoMetadata:
     meta.author = "Template Author"  # TODO_TEMPLATE
     meta.description = "Some Description"  # TODO_TEMPLATE
     meta.email = "hello@example.com"  # TODO_TEMPLATE
+    # meta.add_permission(contract='*', methods='*')
     return meta
 
 # -------------------------------------------
@@ -186,9 +187,13 @@ def post_transfer(token_owner: Union[UInt160, None], to: Union[UInt160, None], t
 @public()
 def delegated_approve(address_from: UInt160, address_to: UInt160, token_id: int) -> None:
     put(b'testeggtwo', 'someone')
-    assert _is_cutie_owner(address_from, token_id), 'Wrong cutie owner'
+    assert _is_cutie_owner(token_id), 'Wrong cutie owner'
     put(b'testeggtwo', 'somevalue')
     put(APPROVALS_PREFIX + cast(bytes, token_id), address_to)
+
+@public()
+def cutie_witness(token_id: int) -> bool:
+    return _is_cutie_owner(token_id)
 
 @public()
 def delegated_approve_test(text: bytes) -> None:
@@ -294,7 +299,7 @@ def _mint(
     return tokenId
 
 def _transfer(address_from: UInt160, address_to: UInt160, cutie_id: int):
-    assert _is_cutie_owner(address_from, cutie_id), "Transfer of token that is not own"
+    assert _is_cutie_owner(cutie_id), "Transfer of token that is not own"
     if (address_from != address_to):
         set_balance(address_from, -1)
         remove_token_account(address_from, cutie_id)
@@ -328,7 +333,7 @@ def ownerOf(tokenId: int) -> UInt160:
 #     owner: UInt160 = get_owner_of(token_id)
 #     return owner == UInt160(tx.sender)
 
-def _is_cutie_owner(xxx: UInt160, token_id: int) -> bool:
+def _is_cutie_owner(token_id: int) -> bool:
     return check_witness(get_owner_of(token_id))
 
 def remove_token_account(holder: UInt160, tokenId: int):
