@@ -42,7 +42,7 @@ export class AppController {
 
   @Get('aaa')
   async getXxx() {
-    return await this.rpcClient.getApplicationLog('0xb60d917656f1819c8f01fd132a4ffd7318d7e0788403f79157311876b9e92a7f')
+    return await this.rpcClient.getApplicationLog('0x3e676d5f15f5123a5a463dc4bb981d1bfdc6287a9b4945917a35c5430885b5ec')
   }
 
   @Get('xxx')
@@ -57,28 +57,29 @@ export class AppController {
 
   async createTransaction() {
     // Since the token is now an NEP-17 token, we transfer using a VM script.
-    const script = sc.createScript({
-      scriptHash: this.inputs.tokenScriptHash,
-      operation: 'transfer',
-      args: [
-        sc.ContractParam.hash160(this.inputs.fromAccount.address),
-        sc.ContractParam.hash160(this.coreContract),
-        sc.ContractParam.integer(300),
-        sc.ContractParam.array(
-          sc.ContractParam.string('_create_sale_auction'),
-          sc.ContractParam.integer(1),
-          sc.ContractParam.integer(100),
-          sc.ContractParam.integer(9000),
-          sc.ContractParam.integer(3000000),
-        ),
-      ],
-    });
     // const script = sc.createScript({
-    //   scriptHash: this.coreContract,
-    //   operation: 'cutie_check_witness',
+    //   scriptHash: this.inputs.tokenScriptHash,
+    //   operation: 'transfer',
     //   args: [
+    //     sc.ContractParam.hash160(this.inputs.fromAccount.address),
+    //     sc.ContractParam.hash160(this.coreContract),
+    //     sc.ContractParam.integer(300),
+    //     sc.ContractParam.array(
+    //       sc.ContractParam.string('_create_sale_auction'),
+    //       sc.ContractParam.integer(1),
+    //       sc.ContractParam.integer(100),
+    //       sc.ContractParam.integer(9000),
+    //       sc.ContractParam.integer(3000000),
+    //     ),
     //   ],
     // });
+    const script = sc.createScript({
+      scriptHash: this.cutieToken,
+      operation: 'ownerOf',
+      args: [
+        sc.ContractParam.integer(1),
+      ],
+    });
 
 
     // We retrieve the current block height as we need to
@@ -91,8 +92,9 @@ export class AppController {
           // scopes: tx.WitnessScope.Global,
           scopes: tx.WitnessScope.CustomContracts,
           allowedContracts: [
+            CONST.NATIVE_CONTRACT_HASH.GasToken,
             this.coreContract,
-            this.cutieToken,
+            // this.cutieToken,
           ],
         },
       ],

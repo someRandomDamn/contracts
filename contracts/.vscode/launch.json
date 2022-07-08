@@ -1,10 +1,7 @@
 {
-    // Use IntelliSense to learn about possible attributes.
-    // Hover to view descriptions of existing attributes.
-    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
-        {
+     {
             "name": "create_auction",
             "type": "neo-contract",
             "request": "launch",
@@ -18,43 +15,23 @@
                     "@coz",
                     "#Core",
                     300,
-                    ["_create_sale_auction", 1, 100, 9000, 3000000]
+                    ["cutie_check_witness", 1, 100, 9000, 3000000]
                 ]
             },
             "signers": [
-                "@coz",
                 {
-                    "account":  "@coz",
+                    "account": "@coz",
                     "scopes": "CustomContracts",
-                    "allowedcontracts": ["Core", "SomeNFT"]
-                }
+                    "allowedcontracts": [
+                        "GasToken",
+                        "Core",
+                    ]
+                },
             ],
             "stored-contracts": [
-                "${workspaceFolder}/contracts/SomeNFT.nef"
+                "${workspaceFolder}/contracts/SomeNFT.nef",
             ]
         },
-        // {
-        //     "name": "create_auction",
-        //     "type": "neo-contract",
-        //     "request": "launch",
-        //     "program": "${workspaceFolder}/contracts/CoreX.nef",
-        //     "neo-express": "${workspaceFolder}/default.neo-express",
-        //     "checkpoint": "${workspaceFolder}/checkpoints/testik.neoxp-checkpoint",
-        //     "invocation": {
-        //         "contract": "CoreX",
-        //         "operation": "test_simple",
-        //         "args": []
-        //     },
-        //     "signers": [
-        //         {
-        //             "account":  "@coz",
-        //             "scopes": "CustomContracts",
-        //             "allowedcontracts": ["CoreY"]
-        //         }
-        //     ],
-        //     "stored-contracts": [
-        //         "${workspaceFolder}/contracts/CoreY.nef"
-        //     ]
-        // }
+       
     ]
 }

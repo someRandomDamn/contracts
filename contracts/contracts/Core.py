@@ -164,6 +164,11 @@ def cutie_check_witness() -> Any:
     return call_contract(UInt160(get(TOKEN_ADDRESS)), 'cutie_witness', [1])
 
 @public
+def cutie_check_witness_com(address_from: UInt160, amount: int, token_address: UInt160, cutie_id: int, start_price: int, end_price: int, duration: int) -> Any:
+    return call_contract(UInt160(get(TOKEN_ADDRESS)), 'cutie_witness', [address_from, UInt160(get(TOKEN_ADDRESS)), cutie_id])
+
+
+@public
 def core_check_witness() -> bool:
     owner: UInt160 = call_contract(UInt160(get(TOKEN_ADDRESS)), 'ownerOf', [1])
     return check_witness(owner)
