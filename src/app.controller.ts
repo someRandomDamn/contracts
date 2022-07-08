@@ -8,8 +8,8 @@ import * as neonCore from '@cityofzion/neon-core';
 
 @Controller()
 export class AppController {
-  private coreContract = '0x565e4faa5a7c4b53c79e9f10b5544e8a083893d4';
-  private cutieToken = '0x1c5789c06069d0a63b1b8447eb2aaa9942e8c096';
+  private coreContract = '0xb0598ece0bdd699e0b3e7fa89d505e0912ef6658';
+  private cutieToken = '0x4d038f4f53ca4ea905887231695aecf301c29d46';
   private rpcClient;
   private vars: any = {};
   private inputs = {
@@ -57,29 +57,29 @@ export class AppController {
 
   async createTransaction() {
     // Since the token is now an NEP-17 token, we transfer using a VM script.
-    // const script = sc.createScript({
-    //   scriptHash: this.inputs.tokenScriptHash,
-    //   operation: 'transfer',
-    //   args: [
-    //     sc.ContractParam.hash160(this.inputs.fromAccount.address),
-    //     sc.ContractParam.hash160(this.coreContract),
-    //     sc.ContractParam.integer(300),
-    //     sc.ContractParam.array(
-    //       sc.ContractParam.string('_create_sale_auction'),
-    //       sc.ContractParam.integer(1),
-    //       sc.ContractParam.integer(100),
-    //       sc.ContractParam.integer(9000),
-    //       sc.ContractParam.integer(3000000),
-    //     ),
-    //   ],
-    // });
     const script = sc.createScript({
-      scriptHash: this.cutieToken,
-      operation: 'ownerOf',
+      scriptHash: this.inputs.tokenScriptHash,
+      operation: 'transfer',
       args: [
-        sc.ContractParam.integer(1),
+        sc.ContractParam.hash160(this.inputs.fromAccount.address),
+        sc.ContractParam.hash160(this.coreContract),
+        sc.ContractParam.integer(300),
+        sc.ContractParam.array(
+          sc.ContractParam.string('_create_sale_auction'),
+          sc.ContractParam.integer(1),
+          sc.ContractParam.integer(100),
+          sc.ContractParam.integer(9000),
+          sc.ContractParam.integer(3000000),
+        ),
       ],
     });
+    // const script = sc.createScript({
+    //   scriptHash: this.cutieToken,
+    //   operation: 'ownerOf',
+    //   args: [
+    //     sc.ContractParam.integer(1),
+    //   ],
+    // });
 
 
     // We retrieve the current block height as we need to

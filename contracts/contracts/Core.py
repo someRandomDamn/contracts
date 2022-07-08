@@ -18,10 +18,10 @@ from boa3.builtin.type import ECPoint, UInt160
 @metadata
 def manifest_metadata() -> NeoMetadata:
     meta = NeoMetadata()
-    # meta.add_permission(contract='*', methods='*')
-    meta.add_permission(contract='0x1c5789c06069d0a63b1b8447eb2aaa9942e8c096')
-    meta.add_permission(contract='0xd2a4cff31913016155e38e474a2c06d08be276cf')
-    meta.add_trusted_source('0xd2a4cff31913016155e38e474a2c06d08be276cf')
+    meta.add_permission(contract='*', methods='*')
+    # meta.add_permission(contract='0x4d038f4f53ca4ea905887231695aecf301c29d46')
+    # meta.add_permission(contract='0xd2a4cff31913016155e38e474a2c06d08be276cf')
+    # meta.add_trusted_source('0xd2a4cff31913016155e38e474a2c06d08be276cf')
     return meta
 
 # -------------------------------------------
@@ -162,11 +162,6 @@ def call_delegated_approve_test() -> None:
 @public
 def cutie_check_witness() -> Any:
     return call_contract(UInt160(get(TOKEN_ADDRESS)), 'cutie_witness', [1])
-
-@public
-def cutie_check_witness_com(address_from: UInt160, amount: int, token_address: UInt160, cutie_id: int, start_price: int, end_price: int, duration: int) -> Any:
-    return call_contract(UInt160(get(TOKEN_ADDRESS)), 'cutie_witness', [address_from, UInt160(get(TOKEN_ADDRESS)), cutie_id])
-
 
 @public
 def core_check_witness() -> bool:

@@ -13,3 +13,5 @@ neoxp contract invoke invoke-files/init.neo-invoke.json owner
 neoxp contract list
 neoxp show balances owner
 neoxp show balances coz
+
+neoxp checkpoint create checkpoints/test --force

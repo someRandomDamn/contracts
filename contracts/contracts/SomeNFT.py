@@ -184,13 +184,6 @@ def post_transfer(token_owner: Union[UInt160, None], to: Union[UInt160, None], t
         if not isinstance(contract, None):      # TODO: change to 'is not None' when `is` semantic is implemented
             call_contract(to, 'onNEP11Payment', [token_owner, 1, tokenId, data])
 
-
-# @public(safe=True)
-# def ownerOf(tokenId: int) -> UInt160:
-#     owner = get_owner_of(tokenId)
-#     assert owner != UInt160(), 'Owner query for nonexistent token'
-#     return owner
-
 @public()
 def delegated_approve(address_from: UInt160, address_to: UInt160, token_id: int) -> None:
     put(b'testeggtwo', 'someone')
@@ -200,6 +193,9 @@ def delegated_approve(address_from: UInt160, address_to: UInt160, token_id: int)
 
 @public()
 def cutie_witness(token_id: int) -> bool:
+    aaa = _is_cutie_owner(token_id)
+    ccc = 1
+    assert _is_cutie_owner(token_id), 'Wrong cutie owner'
     return _is_cutie_owner(token_id)
 
 @public()
