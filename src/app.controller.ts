@@ -42,7 +42,7 @@ export class AppController {
 
   @Get('aaa')
   async getXxx() {
-    return await this.rpcClient.getApplicationLog('0x3e676d5f15f5123a5a463dc4bb981d1bfdc6287a9b4945917a35c5430885b5ec')
+    return await this.rpcClient.getApplicationLog('0x4dd320f10b2b1b99c211b12e66e5499656dd10b0b8e12e9f5305e78d9a0da529')
   }
 
   @Get('xxx')
@@ -65,7 +65,7 @@ export class AppController {
         sc.ContractParam.hash160(this.coreContract),
         sc.ContractParam.integer(300),
         sc.ContractParam.array(
-          sc.ContractParam.string('_create_sale_auction'),
+          sc.ContractParam.string('cutie_check_witness'),
           sc.ContractParam.integer(1),
           sc.ContractParam.integer(100),
           sc.ContractParam.integer(9000),
@@ -73,14 +73,6 @@ export class AppController {
         ),
       ],
     });
-    // const script = sc.createScript({
-    //   scriptHash: this.cutieToken,
-    //   operation: 'ownerOf',
-    //   args: [
-    //     sc.ContractParam.integer(1),
-    //   ],
-    // });
-
 
     // We retrieve the current block height as we need to
     const currentHeight = await this.rpcClient.getBlockCount();
@@ -94,7 +86,7 @@ export class AppController {
           allowedContracts: [
             CONST.NATIVE_CONTRACT_HASH.GasToken,
             this.coreContract,
-            // this.cutieToken,
+            this.cutieToken,
           ],
         },
       ],
@@ -176,20 +168,21 @@ export class AppController {
    can easily get this number by using invokeScript with the appropriate signers.
    */
   async checkSystemFee() {
-    // this.vars.tx.systemFee = u.BigInteger.fromNumber(11322390);
+    // this.vars.tx.systemFee = u.BigInteger.fromNumber(111322390);
     // return;
     const invokeFunctionResponse = await this.rpcClient.invokeScript(
       u.HexString.fromHex(this.vars.tx.script),
       [
         {
           account: this.inputs.fromAccount.scriptHash,
-          // scopes: tx.WitnessScope.Global, // TODO: also try to make it with CalledByEntry here
-          // scopes: tx.WitnessScope.CustomContracts,
-          scopes: tx.WitnessScope.CalledByEntry,
-          // allowedContracts: [
-          //   this.coreContract,
-          //   this.cutieToken,
-          // ],
+          // scopes: tx.WitnessScope.Global,
+          // scopes: tx.WitnessScope.CalledByEntry,
+          scopes: tx.WitnessScope.CustomContracts,
+          allowedContracts: [
+            CONST.NATIVE_CONTRACT_HASH.GasToken,
+            this.coreContract,
+            this.cutieToken,
+          ],
         },
       ],
     );

@@ -15,7 +15,7 @@
                     "@coz",
                     "#Core",
                     300,
-                    ["cutie_check_witness", 1, 100, 9000, 3000000]
+                    ["_create_sale_auction", 1, 100, 9000, 3000000]
                 ]
             },
             "signers": [
@@ -25,6 +25,7 @@
                     "allowedcontracts": [
                         "GasToken",
                         "Core",
+                        "SomeNFT"
                     ]
                 },
             ],
