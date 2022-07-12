@@ -35,6 +35,9 @@ TOKEN_ADDRESS: bytes = b'token_address'
 SALE_MARKET_ADDRESS: bytes = b'sale_market_address'
 gaziki = b'gaziki'
 
+
+GasTestEvent = CreateNewEvent([('from', UInt160), ('amount', int), ('data', List[Any])], 'GasTestEvent')
+
 # -------------------------------------------
 # System Methods
 # -------------------------------------------
@@ -138,7 +141,16 @@ def onNEP17Payment(t_from: UInt160, t_amount: int, data: List[Any]):
         duration = cast(int, data[4])
         call_delegated_approve_test()
         return
+    if p_operation == 'test_gas':
+        assert p_len == 2, 'incorrect data length'
+        GasTestEvent(t_from, t_amount, data)
+        put(b'gas_test_key', cast(int, data[1]))
+        return
     abort()
+
+@public
+def get_gas_test_data() -> Any:
+    return get(b'gas_test_key')
 
 @public
 def onNEP11Payment(from_address: UInt160, amount: int, tokenId: bytes, data: Any):
